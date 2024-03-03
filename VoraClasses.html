@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vora Classes</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        .channel-header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+        }
+        .channel-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .channel-logo {
+            width: 100px; /* Adjust width as needed */
+            height: 100px; /* Adjust height as needed */
+            border-radius: 50%; /* Make the logo circular */
+            overflow: hidden;
+        }
+        .channel-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+        .channel-name {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            background-color:  #ADD8E6;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px; /* Adjust spacing between buttons */
+            transition: background-color 0.2s;
+        }
+        .tab:hover {
+            background-color: #657383;
+        }
+        .video-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 20px;
+            padding: 20px;
+        }
+        .video {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 10px; /* Make video corners smooth */
+            overflow: hidden; /* Hide overflow to ensure smooth corners */
+            position: relative; /* Position for picture-in-picture button */
+        }
+        .video iframe {
+            width: 100%;
+            height: 200px;
+            border: none; /* Remove iframe border */
+        }
+        .video h2 {
+            margin-top: 0;
+            margin-bottom: 5px; /* Add margin between title and iframe */
+            font-size: 14px; /* Adjust font size of video title */
+        }
+        .video p {
+            margin-top: 0; /* Remove top margin */
+            margin-bottom: 0px; /* Add margin between date and title */
+            font-size: 12px; /* Decrease font size for video date */
+            color: #666; /* Adjust color for video date */
+        }
+        .load-more-container {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px; /* Add margin to the bottom */
+        }
+        .load-more {
+            background-color: blue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="channel-header">
+        <div class="channel-logo-container">
+            <div class="channel-logo">
+                <img src="/storage/emulated/0/Fetch/Voraclasses.png" alt="Channel Logo">
+            </div>
+            <div class="channel-name">Vora Classes</div>
+        </div>
+    </div>
+    <div class="tabs">
+        <button class="tab" onclick="fetchVideos('all')">All Videos</button>
+        <button class="tab" onclick="fetchVideos('live')">Live</button>
+        <button class="tab" onclick="fetchVideos('Courses')">Courses</button>
+        <button class="tab" onclick="fetchVideos('playlist')">Playlists</button>
+        <button class="tab" onclick="fetchCommunityPosts()">Community</button>
+    </div>
+    <div class="video-container" id="videos"></div>
+    <div class="load-more-container">
+        <button class="load-more" onclick="loadMoreVideos()">Load More</button>
+    </div>
+
+    <script>
+         // YouTube Data API key
+        const apiKey = 'AIzaSyAPcye23tuPiBGxZA-wYqRYQWL4yFzZlvU';
+        // Number of videos to fetch per request
+        const maxResults = 10;
+        //Variable to keep track of the next page token
+        let nextPageToken = '';
+
+        // Function to fetch and display videos from the specified channel
+        function fetchVideos() {
+            nextPageToken = ''; // Reset nextPageToken
+            const videoContainer = document.getElementById('videos');
+            videoContainer.innerHTML = ''; // Clear previous videos
+            
+            fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCDG_YP69cl42ly3pPy8-Liw&part=snippet,id&order=date&maxResults=${maxResults}`)
+                .then(response => response.json())
+                .then(data => {
+                    const videos = data.items;
+
+                    videos.forEach(video => {
+                        const videoId = video.id.videoId;
+                        const videoTitle = video.snippet.title;
+                        const videoDate = new Date(video.snippet.publishedAt).toLocaleDateString(); // Get published date
+
+                        // Create video element and append it to the container
+                        const videoElement = `
+                            <div class="video">
+                                <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                                <h2>${videoTitle}</h2>
+                                <p>Published on: ${videoDate}</p>
+                            </div>
+                        `;
+                        videoContainer.innerHTML += videoElement;
+                    });
+
+                    // Update nextPageToken for pagination
+                    nextPageToken = data.nextPageToken;
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                });
+        }
+
+        // Function to load more videos when the "Load More" button is clicked
+        function loadMoreVideos() {
+            const videoContainer = document.getElementById('videos');
+
+            fetch(`https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCDG_YP69cl42ly3pPy8-Liw&part=snippet,id&order=date&maxResults=${maxResults}&pageToken=${nextPageToken}`)
+                .then(response => response.json())
+                .then(data => {
+                    const videos = data.items;
+
+                    videos.forEach(video => {
+                        const videoId = video.id.videoId;
+                        const videoTitle = video.snippet.title;
+                        const videoDate = new Date(video.snippet.publishedAt).toLocaleDateString(); // Get published date
+
+                        // Create video element and append it to the container
+                        const videoElement = `
+                            <div class="video">
+                                <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                                <h2>${videoTitle}</h2>
+                                <p>Published on: ${videoDate}</p>
+                            </div>
+                        `;
+                        videoContainer.innerHTML += videoElement;
+                    });
+
+                    // Update nextPageToken for pagination
+                    nextPageToken = data.nextPageToken;
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                });
+        }
+
+        // Fetch videos for the "Home" category on page load
+        fetchVideos('all');
+
+        // Function to fetch videos based on category
+        function fetchVideos(category) {
+            let apiUrl = '';
+            switch (category) {
+                case 'live':
+                    apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCDG_YP69cl42ly3pPy8-Liw&part=snippet,id&eventType=live&order=date&maxResults=${maxResults}`;
+                    break;
+                case 'Courses':
+                    apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCDG_YP69cl42ly3pPy8-Liw&part=snippet,id&type=video&videoDuration=short&order=date&maxResults=${maxResults}`;
+                    break;
+                case 'playlist':
+                    apiUrl = `https://www.googleapis.com/youtube/v3/playlists?key=${apiKey}&channelId=UCDG_YP69cl42ly3pPy8-Liw&part=snippet&maxResults=${maxResults}`;
+                    break;
+                default:
+                    apiUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=UCDG_YP69cl42ly3pPy8-Liw&part=snippet,id&order=date&maxResults=${maxResults}`;
+            }
+
+            // Fetch videos based on the API URL
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const videos = data.items;
+
+                    // Process and display videos
+                    videos.forEach(video => {
+                        const videoId = video.id.videoId || video.id;
+                        const videoTitle = video.snippet.title;
+                        const videoDate = new Date(video.snippet.publishedAt).toLocaleDateString();
+
+                        // Create video element and append it to the container
+                        const videoElement = `
+                            <div class="video">
+                                <iframe src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+                                <h2>${videoTitle}</h2>
+                                <p>Published on: ${videoDate}</p>
+                            </div>
+                        `;
+                        document.getElementById('videos').innerHTML += videoElement;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching videos:', error);
+                });
+        }
+
+        // Function to fetch community posts
+        function fetchCommunityPosts() {
+            fetch(`https://www.googleapis.com/youtube/v3/communityPosts?key=${apiKey}&channelId=${channelId}&part=snippet`)
+                .then(response => response.json())
+                .then(data => {
+                    const communityPosts = data.items;
+
+                    // Process and display community posts
+                    communityPosts.forEach(post => {
+                        const postTitle = post.snippet.title;
+                        const postContent = post.snippet.textDisplay;
+                        // Display the post title and content on your webpage
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching community posts:', error);
+                });
+        }
+    </script>
+</body>
+</html>

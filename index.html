@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indian Institute of Technology</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('wallpaper.png'); /* Specify the path to your wallpaper image */
+            background-size: cover; /* Cover the entire viewport */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Do not repeat the background image */
+        }
+        .channel-header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #f8f9fa;
+        }
+        .channel-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px; /* Add space below the logo */
+        }
+        .channel-logo {
+            width: 90px; /* Adjust width as needed */
+            height: 90px; /* Adjust height as needed */
+            border-radius: 50%; /* Make the logo circular */
+            overflow: hidden;
+        }
+        .channel-logo img {
+            width: 90%;
+            height: 90%;
+            object-fit: cover; /* Maintain aspect ratio */
+        }
+        .channel-name {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Allow buttons to wrap to next line */
+            gap: 10px; /* Adjust gap between buttons */
+        }
+        .tab {
+            background-color: #ADD8E6;
+            color: black;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 10px 10px 0; /* Adjust spacing between buttons and margin below */
+            transition: background-color 0.4s, transform 0.3s; /* Add transition for hover effect */
+        }
+        .tab:hover {
+            background-color: #4682B4; /* Darker shade of blue on hover */
+            transform: scale(1.05); /* Scale up the button slightly on hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Channel Header -->
+    <div class="channel-header">
+        <!-- Channel Logo -->
+        <div class="channel-logo-container">
+            <div class="channel-logo">
+                <img src="iitb.png" alt="Logo">
+            </div>
+        </div>
+        <!-- Channel Name -->
+        <div class="channel-name">Indian Institute of Technology</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="tabs">
+        <button class="tab" onclick="openPage('Physicsgalaxy.html')">Physics Galaxy</button>
+        <button class="tab" onclick="openPage('mathongo.html')">Mathongo</button>
+        <button class="tab" onclick="openPage('Eduniti.html')">Eduniti</button>
+        <button class="tab" onclick="openPage('mathsunplugged.html')">Maths Unplugged</button>
+        <button class="tab" onclick="openPage('NexusJEE.html')">Nexus JEE</button>
+        <button class="tab" onclick="openPage('Lakshyajee.html')">Lakshya JEE</button>
+        <button class="tab" onclick="openPage('arjunajee.html')">Arjuna JEE</button>
+        <button class="tab" onclick="openPage('Voraclasses.html')">Vora Classes</button>
+        <button class="tab" onclick="openPage('arjunajee.html')">Arjuna JEE</button>
+        <button class="tab" onclick="openPage('arjunajee.html')">Arjuna JEE</button>
+        <!-- Add more buttons for other pages -->
+        <!-- Example: -->
+        <!-- <button onclick="openPage('page3.html')">Page 3</button> -->
+    </div>
+
+    <script>
+        function openPage(pageUrl) {
+            window.location.href = pageUrl;
+        }
+    </script>
+</body>
+</html>
